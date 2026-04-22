@@ -1,0 +1,15 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: otp_postgres
+        environment:
+            POSTGRES_DB: otp_db
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: secret
+        ports:
+            - "5432:5432"
+        volumes:
+            - otp_postgres_data:/var/lib/postgresql/data
+
+volumes:
+    otp_postgres_data:
