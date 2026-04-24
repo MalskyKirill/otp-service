@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.mephi.malskiy.config.Database;
 import ru.mephi.malskiy.config.DatabaseConfig;
+import ru.mephi.malskiy.config.SchemaInitializer;
 import ru.mephi.malskiy.handler.HealthHandler;
 
 import java.io.IOException;
@@ -18,6 +19,8 @@ public class OtpApp {
     public static void main(String[] args) throws IOException {
         DatabaseConfig config = new DatabaseConfig();
         Database database = new Database(config);
+        SchemaInitializer schemaInitializer = new SchemaInitializer(database);
+        schemaInitializer.init();
 
         checkDatabaseConnection(database);
 
