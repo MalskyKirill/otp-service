@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class DatabaseConfig {
+public class AppConfig {
     private final Properties properties = new Properties();
 
-    public DatabaseConfig() {
+    public AppConfig() {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.properties")) {
 
             if (inputStream == null) {

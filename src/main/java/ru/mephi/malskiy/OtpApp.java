@@ -3,8 +3,8 @@ package ru.mephi.malskiy;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.mephi.malskiy.config.AppConfig;
 import ru.mephi.malskiy.config.Database;
-import ru.mephi.malskiy.config.DatabaseConfig;
 import ru.mephi.malskiy.config.SchemaInitializer;
 import ru.mephi.malskiy.handler.HealthHandler;
 
@@ -17,7 +17,7 @@ public class OtpApp {
     private static final Logger logger = LoggerFactory.getLogger(OtpApp.class);
 
     public static void main(String[] args) throws IOException {
-        DatabaseConfig config = new DatabaseConfig();
+        AppConfig config = new AppConfig();
         Database database = new Database(config);
         SchemaInitializer schemaInitializer = new SchemaInitializer(database);
         schemaInitializer.init();

@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    private final DatabaseConfig databaseConfig;
+    private final AppConfig databaseConfig;
 
-    public Database(DatabaseConfig databaseConfig) {
+    public Database(AppConfig databaseConfig) {
         this.databaseConfig = databaseConfig;
     }
 
