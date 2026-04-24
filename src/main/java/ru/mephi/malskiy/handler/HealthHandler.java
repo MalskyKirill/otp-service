@@ -15,7 +15,7 @@ public class HealthHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (!"get".equalsIgnoreCase(exchange.getRequestMethod())) {
-            ResponseUtil.sendJson(exchange, 405, Map.of("error", "Method not allowed"));
+            ResponseUtil.sendError(exchange, 405, "Method not allowed");
             return;
         }
 
