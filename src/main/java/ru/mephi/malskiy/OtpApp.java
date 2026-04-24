@@ -6,7 +6,11 @@ import org.slf4j.LoggerFactory;
 import ru.mephi.malskiy.config.AppConfig;
 import ru.mephi.malskiy.config.Database;
 import ru.mephi.malskiy.config.SchemaInitializer;
+import ru.mephi.malskiy.dao.UserDao;
 import ru.mephi.malskiy.handler.HealthHandler;
+import ru.mephi.malskiy.handler.RegisterHandler;
+import ru.mephi.malskiy.security.PasswordHasher;
+import ru.mephi.malskiy.service.UserService;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -24,9 +28,14 @@ public class OtpApp {
 
         checkDatabaseConnection(database);
 
+        UserDao userDao = new UserDao(database);
+        PasswordHasher passwordHasher = new PasswordHasher();
+        UserService userService = new UserService(userDao, passwordHasher);
+
         HttpServer server = HttpServer.create(new InetSocketAddress(config.getServerPort()), 0);
 
         server.createContext("/health", new HealthHandler());
+        server.createContext("/user/register", new RegisterHandler(userService));
 
         server.setExecutor(null);
         server.start();
