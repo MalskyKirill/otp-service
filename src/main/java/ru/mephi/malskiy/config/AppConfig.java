@@ -35,4 +35,8 @@ public class AppConfig {
     public int getServerPort() {
         return Integer.parseInt(properties.getProperty("server.port"));
     }
+
+    public String getJwtSecret() {return properties.getProperty("jwt.secret"); }
+
+    public long getJwtExpirationMinutes() { return Long.parseLong(properties.getProperty("jwt.expiration.minutes")); }
 }
