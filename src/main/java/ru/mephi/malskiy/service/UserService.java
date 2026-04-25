@@ -23,6 +23,14 @@ public class UserService {
         String password = requestDto.getPassword();
         UserRole role = parseRole(requestDto.getRole());
 
+        if (userDao.existsByLogin(login)) {
+            throw new AppException(409, "User with this login already exists");
+        }
+
+        if (role == UserRole.ADMIN && userDao.existsAdmin()) {
+            throw new AppException(409, "Admin already exists");
+        }
+
         String passwordHash = passwordHasher.hash(password);
 
         User user = new User(login, passwordHash, role);

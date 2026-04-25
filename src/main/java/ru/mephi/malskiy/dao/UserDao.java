@@ -44,6 +44,38 @@ public class UserDao {
         }
     }
 
+    public boolean existsByLogin(String login) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE login = ?)";
+
+        try (Connection connection = database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)){
+
+            statement.setString(1, login);
+
+            try (ResultSet resultSet = statement.executeQuery()){
+                resultSet.next();
+                return resultSet.getBoolean(1);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while checking user login", e);
+        }
+    }
+
+    public boolean existsAdmin() {
+        String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE role = 'ADMIN')";
+
+        try (Connection connection = database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            resultSet.next();
+            return resultSet.getBoolean(1);
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while checking admin existence", e);
+        }
+    }
+
     private User mapUser(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String login = resultSet.getString("login");
