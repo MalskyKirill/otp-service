@@ -32,7 +32,7 @@ public class OtpApp {
 
         UserDao userDao = new UserDao(database);
         PasswordHasher passwordHasher = new PasswordHasher();
-        JwtService jwtService = new qJwtService(config);
+        JwtService jwtService = new JwtService(config);
         UserService userService = new UserService(userDao, passwordHasher, jwtService);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(config.getServerPort()), 0);
