@@ -26,3 +26,7 @@ CREATE TABLE IF NOT EXISTS otp_codes (
     expires_at TIMESTAMP NOT NULL,
     used_at TIMESTAMP
 );
+
+INSERT INTO otp_config (id, code_length, lifetime_seconds)
+VALUES (1, 6, 300)
+ON CONFLICT (id) DO NOTHING;
