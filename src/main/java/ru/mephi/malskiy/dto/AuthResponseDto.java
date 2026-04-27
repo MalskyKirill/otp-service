@@ -3,12 +3,12 @@ package ru.mephi.malskiy.dto;
 public class AuthResponseDto {
     private String token;
     private String type;
-    private int expiresInMinutes;
+    private long expiresInMinutes;
 
     public AuthResponseDto() {
     }
 
-    public AuthResponseDto(String token, String type, int expiresInMinutes) {
+    public AuthResponseDto(String token, String type, long expiresInMinutes) {
         this.token = token;
         this.type = type;
         this.expiresInMinutes = expiresInMinutes;
@@ -30,7 +30,7 @@ public class AuthResponseDto {
         this.type = type;
     }
 
-    public int getExpiresInMinutes() {
+    public long getExpiresInMinutes() {
         return expiresInMinutes;
     }
 

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class UserDao {
 
@@ -41,6 +42,30 @@ public class UserDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Database error while creating user", e);
+        }
+    }
+
+    public Optional<User> findByLogin(String login) {
+        String sql = """
+            SELECT id, login, password_hash, role, created_at
+            FROM users
+            WHERE login = ?
+            """;
+
+        try (Connection connection = database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)){
+
+            statement.setString(1, login);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapUser(resultSet));
+                }
+            }
+
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while finding user by login", e);
         }
     }
 

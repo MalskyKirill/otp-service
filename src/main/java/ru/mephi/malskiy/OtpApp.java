@@ -8,7 +8,9 @@ import ru.mephi.malskiy.config.Database;
 import ru.mephi.malskiy.config.SchemaInitializer;
 import ru.mephi.malskiy.dao.UserDao;
 import ru.mephi.malskiy.handler.HealthHandler;
+import ru.mephi.malskiy.handler.LoginHandler;
 import ru.mephi.malskiy.handler.RegisterHandler;
+import ru.mephi.malskiy.security.JwtService;
 import ru.mephi.malskiy.security.PasswordHasher;
 import ru.mephi.malskiy.service.UserService;
 
@@ -30,12 +32,14 @@ public class OtpApp {
 
         UserDao userDao = new UserDao(database);
         PasswordHasher passwordHasher = new PasswordHasher();
-        UserService userService = new UserService(userDao, passwordHasher);
+        JwtService jwtService = new qJwtService(config);
+        UserService userService = new UserService(userDao, passwordHasher, jwtService);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(config.getServerPort()), 0);
 
         server.createContext("/health", new HealthHandler());
-        server.createContext("/user/register", new RegisterHandler(userService));
+        server.createContext("/users/register", new RegisterHandler(userService));
+        server.createContext("/users/login", new LoginHandler(userService));
 
         server.setExecutor(null);
         server.start();
