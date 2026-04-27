@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
@@ -69,6 +71,29 @@ public class UserDao {
         }
     }
 
+    public Optional<User> findUserById(Long id) {
+        String sql = """
+            SELECT id, login, password_hash, role, created_at
+            FROM users
+            WHERE id = ?
+            """;
+
+        try (Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+
+            preparedStatement.setLong(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapUser(resultSet));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while finding user by id", e);
+        }
+    }
+
     public boolean existsByLogin(String login) {
         String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE login = ?)";
 
@@ -98,6 +123,47 @@ public class UserDao {
             return resultSet.getBoolean(1);
         } catch (SQLException e) {
             throw new RuntimeException("Database error while checking admin existence", e);
+        }
+    }
+
+    public List<User> findAllUsersExpectAdmins() {
+        String sql = """
+            SELECT id, login, password_hash, role, created_at
+            FROM users
+            WHERE role = 'USER'
+            ORDER BY id
+            """;
+
+        List<User> users = new ArrayList<>();
+
+        try (Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                users.add(mapUser(resultSet));
+            }
+
+        return users;
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while finding users", e);
+        }
+
+    }
+
+    public void deleteUserById(Long id) {
+        String sql = """
+            DELETE FROM users WHERE id = ?
+            """;
+
+        try (Connection connection = database.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error while deleting user", e);
         }
     }
 

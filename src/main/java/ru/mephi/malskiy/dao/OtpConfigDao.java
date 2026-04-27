@@ -37,7 +37,7 @@ public class OtpConfigDao {
         }
     }
 
-    public Optional<OtpConfig> updateOptConfig(int codeLength, int lifetimeSeconds) {
+    public OtpConfig updateOptConfig(int codeLength, int lifetimeSeconds) {
         String sql = """
             UPDATE opt_config
             SET code_length = ?, lifetime_seconds = ?
@@ -53,11 +53,11 @@ public class OtpConfigDao {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return Optional.of(mapConfig(resultSet));
+                    return mapConfig(resultSet);
                 }
             }
 
-            return Optional.empty();
+            throw new SQLException("OTP config was not updated");
         } catch (SQLException e) {
             throw new RuntimeException("Database error while updating otp config", e);
         }
