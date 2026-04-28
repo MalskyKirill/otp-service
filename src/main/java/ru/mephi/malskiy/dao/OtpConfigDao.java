@@ -39,7 +39,7 @@ public class OtpConfigDao {
 
     public OtpConfig updateOptConfig(int codeLength, int lifetimeSeconds) {
         String sql = """
-            UPDATE opt_config
+            UPDATE otp_config
             SET code_length = ?, lifetime_seconds = ?
             WHERE id = 1
             RETURNING id, code_length, lifetime_seconds

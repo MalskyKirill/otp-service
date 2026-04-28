@@ -39,7 +39,7 @@ public class OtpConfigHandler implements HttpHandler {
                 return;
             }
 
-            if ("post".equalsIgnoreCase(method)) {
+            if ("put".equalsIgnoreCase(method)) {
                 UpdateOtpConfigRequestDto request = JsonUtil.fromJson(exchange.getRequestBody(),
                     UpdateOtpConfigRequestDto.class);
 
