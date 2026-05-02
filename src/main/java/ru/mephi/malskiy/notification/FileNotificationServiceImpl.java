@@ -18,7 +18,7 @@ public class FileNotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendCode(String destination, int code) {
+    public void sendCode(String destination, String code) {
 
         String line = String.format(
             "[%s] destination=%s, code=%s%n",

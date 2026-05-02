@@ -2,10 +2,10 @@ package ru.mephi.malskiy.dto;
 
 public class ValidOtpResponseDto {
     private boolean valid;
-    private boolean status;
-    private boolean message;
+    private String status;
+    private String message;
 
-    public ValidOtpResponseDto(boolean valid, boolean status, boolean message) {
+    public ValidOtpResponseDto(boolean valid, String status, String message) {
         this.valid = valid;
         this.status = status;
         this.message = message;
@@ -15,11 +15,11 @@ public class ValidOtpResponseDto {
         return valid;
     }
 
-    public boolean isStatus() {
+    public String isStatus() {
         return status;
     }
 
-    public boolean isMessage() {
+    public String isMessage() {
         return message;
     }
 }
