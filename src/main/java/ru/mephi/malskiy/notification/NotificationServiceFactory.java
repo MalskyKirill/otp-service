@@ -6,7 +6,7 @@ import ru.mephi.malskiy.model.enums.NotificationChannel;
 public class NotificationServiceFactory {
     private final NotificationService fileNotificationServiceImpl;
 
-    public NotificationServiceFactory(NotificationService notificationService) {
+    public NotificationServiceFactory() {
         this.fileNotificationServiceImpl = new FileNotificationServiceImpl();
     }
 

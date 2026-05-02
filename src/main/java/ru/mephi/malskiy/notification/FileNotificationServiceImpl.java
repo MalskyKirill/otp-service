@@ -13,7 +13,7 @@ public class FileNotificationServiceImpl implements NotificationService {
     private static final Logger logger = LoggerFactory.getLogger(FileNotificationServiceImpl.class);
     private final Path file;
 
-    public FileNotificationServiceImpl(Path file) {
+    public FileNotificationServiceImpl() {
         this.file = Path.of("otp_codes.txt");
     }
 
