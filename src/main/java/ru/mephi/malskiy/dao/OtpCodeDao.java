@@ -21,7 +21,7 @@ public class OtpCodeDao {
 
     public OtpCode create(Long userId, String operationId, String code, LocalDateTime expiresAt) {
         String sql = """
-            INSERT INTO otp_code (user_id, operation_id, code, status, expires_at)
+            INSERT INTO otp_codes (user_id, operation_id, code, status, expires_at)
             VALUES (?, ?, ?, 'ACTIVE', ?)
             RETURNING id, user_id, operation_id, code, status, created_at, expires_at, used_at
             """;
@@ -49,7 +49,7 @@ public class OtpCodeDao {
     public Optional<OtpCode> findLatestActiveByUserAndOperation(Long userId, String operationId) {
         String sql = """
             SELECT id, user_id, operation_id, code, status, created_at, expires_at, used_at
-            FROM otp_code
+            FROM otp_codes
             WHERE user_id = ?
             AND operation_id = ?
             AND status = 'ACTIVE'
@@ -77,7 +77,7 @@ public class OtpCodeDao {
     public void expireActiveCodesForUserAndOperation(Long userId, String operationId) {
         String sql = """
             UPDATE otp_codes
-            SET status 'EXPIRED'
+            SET status = 'EXPIRED'
             WHERE user_id = ?
             AND operation_id = ?
             AND status = 'ACTIVE'

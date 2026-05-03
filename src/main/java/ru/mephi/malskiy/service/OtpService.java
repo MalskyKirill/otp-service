@@ -42,6 +42,8 @@ public class OtpService {
         OtpConfig otpConfig = otpConfigDao.getOtpConfig()
             .orElseThrow(() -> new AppException(404, "OTP config not found"));
 
+        NotificationService notificationService = notificationServiceFactory.getNotificationService(channel);
+
         LocalDateTime now = LocalDateTime.now();
 
         LocalDateTime expiresAt = now.plusSeconds(otpConfig.getLifetimeSeconds());
@@ -50,8 +52,6 @@ public class OtpService {
 
         otpCodeDao.expireActiveCodesForUserAndOperation(user.getUserId(), request.getOperationId());
         otpCodeDao.create(user.getUserId(), request.getOperationId(), code, expiresAt);
-
-        NotificationService notificationService = notificationServiceFactory.getNotificationService(channel);
 
         notificationService.sendCode(request.getDestination(), code);
 
@@ -74,7 +74,7 @@ public class OtpService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (now.isBefore(otpCode.getExpiresAt())) {
+        if (!now.isBefore(otpCode.getExpiresAt())) {
             otpCodeDao.marcAsExpired(otpCode.getId());
             return new ValidOtpResponseDto(false, "EXPIRED", "Otp code expired");
         }
