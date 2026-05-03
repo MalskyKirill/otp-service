@@ -1,5 +1,7 @@
 package ru.mephi.malskiy.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.mephi.malskiy.dao.OtpCodeDao;
 import ru.mephi.malskiy.dao.OtpConfigDao;
 import ru.mephi.malskiy.dto.CreateOtpRequestDto;
@@ -18,6 +20,8 @@ import ru.mephi.malskiy.util.OtpGenerator;
 import java.time.LocalDateTime;
 
 public class OtpService {
+    private static final Logger logger = LoggerFactory.getLogger(OtpService.class);
+
     private final OtpCodeDao otpCodeDao;
     private final OtpConfigDao otpConfigDao;
     private final OtpGenerator otpGenerator;
@@ -38,6 +42,7 @@ public class OtpService {
         validateCreateRequest(request);
 
         NotificationChannel channel = parseChanel(request.getChanel());
+        logger.info("Create OTP request: userId={}, operationId={}, channel={}", user.getUserId(), request.getOperationId(), channel);
 
         OtpConfig otpConfig = otpConfigDao.getOtpConfig()
             .orElseThrow(() -> new AppException(404, "OTP config not found"));
@@ -52,8 +57,10 @@ public class OtpService {
 
         otpCodeDao.expireActiveCodesForUserAndOperation(user.getUserId(), request.getOperationId());
         otpCodeDao.create(user.getUserId(), request.getOperationId(), code, expiresAt);
+        logger.info("OTP created: userId={}, operationId={}, expiresAt={}", user.getUserId(), request.getOperationId(), expiresAt);
 
         notificationService.sendCode(request.getDestination(), code);
+        logger.info("OTP notification sent: userId={}, operationId={}, destination={}", user.getUserId(), request.getOperationId(), request.getDestination());
 
         return new CreateOtpResponseDto(
             "OTP code generated successfully",
@@ -68,6 +75,7 @@ public class OtpService {
         }
 
         validateValidRequest(request);
+        logger.info("Validate OTP request: userId={}, operationId={}", user.getUserId(), request.getOperationId());
 
         OtpCode otpCode = otpCodeDao.findLatestActiveByUserAndOperation(user.getUserId(), request.getOperationId())
             .orElseThrow(() -> new AppException(404, "Active OTP code not found"));
@@ -76,14 +84,17 @@ public class OtpService {
 
         if (!now.isBefore(otpCode.getExpiresAt())) {
             otpCodeDao.marcAsExpired(otpCode.getId());
+            logger.info("OTP expired during validation: userId={}, operationId={}, otpId={}", user.getUserId(), request.getOperationId(), otpCode.getId());
             return new ValidOtpResponseDto(false, "EXPIRED", "Otp code expired");
         }
 
         if (!otpCode.getCode().equals(request.getCode())) {
+            logger.info("OTP code mismatch: userId={}, operationId={}, otpId={}", user.getUserId(), request.getOperationId(), otpCode.getId());
             return new ValidOtpResponseDto(false, "ACTIVE", "Invalid OTP code");
         }
 
         otpCodeDao.marcAsUsed(otpCode.getId(), now);
+        logger.info("OTP validated successfully: userId={}, operationId={}, otpId={}", user.getUserId(), request.getOperationId(), otpCode.getId());
         return new ValidOtpResponseDto(true, "USED", "OTP validated successfully");
     }
 
