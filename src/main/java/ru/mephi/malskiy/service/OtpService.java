@@ -41,7 +41,7 @@ public class OtpService {
 
         validateCreateRequest(request);
 
-        NotificationChannel channel = parseChanel(request.getChanel());
+        NotificationChannel channel = parseChannel(request.getChannel());
         logger.info("Create OTP request: userId={}, operationId={}, channel={}", user.getUserId(), request.getOperationId(), channel);
 
         OtpConfig otpConfig = otpConfigDao.getOtpConfig()
@@ -107,8 +107,8 @@ public class OtpService {
             throw new AppException(400, "Operation is required");
         }
 
-        if (request.getChanel() == null || request.getChanel().isBlank()) {
-            throw new AppException(400, "Chanel is required");
+        if (request.getChannel() == null || request.getChannel().isBlank()) {
+            throw new AppException(400, "Channel is required");
         }
     }
 
@@ -126,12 +126,11 @@ public class OtpService {
         }
     }
 
-    private NotificationChannel parseChanel(String chanel) {
+    private NotificationChannel parseChannel(String channel) {
         try {
-            return NotificationChannel.fromString(chanel);
+            return NotificationChannel.fromString(channel);
         } catch (IllegalArgumentException e) {
-            throw new AppException(400, "Invalid chanel");
+            throw new AppException(400, "Invalid channel");
         }
-
     }
 }

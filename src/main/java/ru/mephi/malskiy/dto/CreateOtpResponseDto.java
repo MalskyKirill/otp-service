@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 public class CreateOtpResponseDto {
     private String message;
     private String operationId;
-    private String chanel;
+    private String channel;
     private LocalDateTime expiresAt;
 
     public CreateOtpResponseDto() {
     }
 
-    public CreateOtpResponseDto(String message, String operationId, String chanel, LocalDateTime expiresAt) {
+    public CreateOtpResponseDto(String message, String operationId, String channel, LocalDateTime expiresAt) {
         this.message = message;
         this.operationId = operationId;
-        this.chanel = chanel;
+        this.channel = channel;
         this.expiresAt = expiresAt;
     }
 
@@ -34,12 +34,12 @@ public class CreateOtpResponseDto {
         this.operationId = operationId;
     }
 
-    public String getChanel() {
-        return chanel;
+    public String getChannel() {
+        return channel;
     }
 
-    public void setChanel(String chanel) {
-        this.chanel = chanel;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public LocalDateTime getExpiresAt() {

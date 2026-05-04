@@ -1,1 +1,3 @@
 [2026-05-03T09:34:38.755525] destination=test@example.com, code=261403
+[2026-05-03T12:00:41.272110] destination=otp_codes.txt, code=914646
+[2026-05-03T12:32:06.814235] destination=otp_codes.txt, code=271953

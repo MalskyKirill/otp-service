@@ -2,7 +2,7 @@ package ru.mephi.malskiy.dto;
 
 public class CreateOtpRequestDto {
     private String operationId;
-    private String chanel;
+    private String channel;
     private String destination;
 
     public String getOperationId() {
@@ -13,12 +13,12 @@ public class CreateOtpRequestDto {
         this.operationId = operationId;
     }
 
-    public String getChanel() {
-        return chanel;
+    public String getChannel() {
+        return channel;
     }
 
-    public void setChanel(String chanel) {
-        this.chanel = chanel;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getDestination() {
