@@ -11,6 +11,7 @@ import ru.mephi.malskiy.dao.OtpConfigDao;
 import ru.mephi.malskiy.dao.UserDao;
 import ru.mephi.malskiy.handler.*;
 import ru.mephi.malskiy.notification.NotificationServiceFactory;
+import ru.mephi.malskiy.scheduler.OtpExpirationScheduler;
 import ru.mephi.malskiy.security.JwtService;
 import ru.mephi.malskiy.security.PasswordHasher;
 import ru.mephi.malskiy.service.AdminService;
@@ -49,6 +50,9 @@ public class OtpApp {
             new OtpGenerator(),
             new NotificationServiceFactory());
 
+        OtpExpirationScheduler scheduler = new OtpExpirationScheduler(otpCodeDao);
+        scheduler.start();
+
         HttpServer server = HttpServer.create(new InetSocketAddress(config.getServerPort()), 0);
 
         server.createContext("/health", new HealthHandler());
@@ -64,6 +68,11 @@ public class OtpApp {
         server.setExecutor(null);
         server.start();
         logger.info("OTP service started on port {}", config.getServerPort());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Shutting down OTP service");
+            scheduler.stop();
+        }));
     }
 
     private static void checkDatabaseConnection(Database database) {
