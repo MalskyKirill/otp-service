@@ -10,6 +10,7 @@ import ru.mephi.malskiy.dao.OtpCodeDao;
 import ru.mephi.malskiy.dao.OtpConfigDao;
 import ru.mephi.malskiy.dao.UserDao;
 import ru.mephi.malskiy.handler.*;
+import ru.mephi.malskiy.handler.middleware.LoggingHandler;
 import ru.mephi.malskiy.notification.NotificationServiceFactory;
 import ru.mephi.malskiy.scheduler.OtpExpirationScheduler;
 import ru.mephi.malskiy.security.JwtService;
@@ -55,15 +56,15 @@ public class OtpApp {
 
         HttpServer server = HttpServer.create(new InetSocketAddress(config.getServerPort()), 0);
 
-        server.createContext("/health", new HealthHandler());
-        server.createContext("/auth/register", new RegisterHandler(userService));
-        server.createContext("/auth/login", new LoginHandler(userService));
+        server.createContext("/health", new LoggingHandler(new HealthHandler()));
+        server.createContext("/auth/register", new LoggingHandler(new RegisterHandler(userService)));
+        server.createContext("/auth/login", new LoggingHandler(new LoginHandler(userService)));
 
-        server.createContext("/admin/otp-config", new OtpConfigHandler(adminService, jwtService));
-        server.createContext("/admin/users", new AdminHandler(adminService, jwtService));
+        server.createContext("/admin/otp-config", new LoggingHandler(new OtpConfigHandler(adminService, jwtService)));
+        server.createContext("/admin/users", new LoggingHandler(new AdminHandler(adminService, jwtService)));
 
-        server.createContext("/user/otp", new UserOtpHandler(otpService, jwtService));
-        server.createContext("/user/otp/validate", new UserOtpValidationHandler(otpService, jwtService));
+        server.createContext("/user/otp", new LoggingHandler(new UserOtpHandler(otpService, jwtService)));
+        server.createContext("/user/otp/validate", new LoggingHandler(new UserOtpValidationHandler(otpService, jwtService)));
 
         server.setExecutor(null);
         server.start();
