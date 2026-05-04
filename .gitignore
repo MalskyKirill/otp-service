@@ -37,6 +37,7 @@ build/
 ### Mac OS ###
 .DS_Store
 
-src/main/resources/email.properties.example
-src/main/resources/sms.properties.example
-src/main/resources/telegram.properties.example
+src/main/resources/email.properties
+src/main/resources/sms.properties
+src/main/resources/telegram.properties
+
